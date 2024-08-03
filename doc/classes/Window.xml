@@ -595,6 +595,10 @@
 		<member name="force_native" type="bool" setter="set_force_native" getter="get_force_native" default="false">
 			If [code]true[/code], native window will be used regardless of parent viewport and project settings.
 		</member>
+		<member name="hide_from_taskbar" type="bool" setter="set_flag" getter="get_flag" default="false">
+			If [code]true[/code], the window will not appear in the taskbar.
+			[b]Note:[/b] This property is implemented only on Windows.
+		</member>
 		<member name="initial_position" type="int" setter="set_initial_position" getter="get_initial_position" enum="Window.WindowInitialPosition" default="0">
 			Specifies the initial type of position for the [Window]. See [enum WindowInitialPosition] constants.
 		</member>
@@ -839,7 +843,11 @@
 			All mouse events are passed to the underlying window of the same application.
 			[b]Note:[/b] This flag has no effect in embedded windows.
 		</constant>
-		<constant name="FLAG_MAX" value="8" enum="Flags">
+		<constant name="FLAG_HIDE_FROM_TASKBAR" value="8" enum="Flags">
+			The window will not appear in the taskbar. Set with [member hide_from_taskbar].
+			[b]Note:[/b] This flag is implemented only on Windows.
+		</constant>
+		<constant name="FLAG_MAX" value="9" enum="Flags">
 			Max value of the [enum Flags].
 		</constant>
 		<constant name="CONTENT_SCALE_MODE_DISABLED" value="0" enum="ContentScaleMode">

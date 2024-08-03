@@ -1343,6 +1343,9 @@ DisplayServer::WindowID DisplayServerWindows::create_sub_window(WindowMode p_mod
 
 		wd.layered_window = true;
 	}
+	if (p_flags & WINDOW_FLAG_HIDE_FROM_TASKBAR_BIT) {
+		wd.hide_from_taskbar = true;
+	}
 
 	// Inherit icons from MAIN_WINDOW for all sub windows.
 	HICON mainwindow_icon = (HICON)SendMessage(windows[MAIN_WINDOW_ID].hWnd, WM_GETICON, ICON_SMALL, 0);
@@ -2156,6 +2159,11 @@ void DisplayServerWindows::window_set_flag(WindowFlags p_flag, bool p_enabled, W
 			ERR_FAIL_COND_MSG(IsWindowVisible(wd.hWnd) && (wd.is_popup != p_enabled), "Popup flag can't changed while window is opened.");
 			wd.is_popup = p_enabled;
 		} break;
+		case WINDOW_FLAG_HIDE_FROM_TASKBAR: {
+			ERR_FAIL_COND_MSG(p_window == MAIN_WINDOW_ID, "Main window can't be hidden from taskbar.");
+			wd.hide_from_taskbar = p_enabled;
+			SetWindowLongPtr(wd.hWnd, GWLP_HWNDPARENT, (LONG_PTR)(p_enabled ? windows[MAIN_WINDOW_ID].hWnd : nullptr));
+		}
 		default:
 			break;
 	}
@@ -2187,6 +2195,9 @@ bool DisplayServerWindows::window_get_flag(WindowFlags p_flag, WindowID p_window
 		} break;
 		case WINDOW_FLAG_POPUP: {
 			return wd.is_popup;
+		} break;
+		case WINDOW_FLAG_HIDE_FROM_TASKBAR: {
+			return wd.hide_from_taskbar;
 		} break;
 		default:
 			break;
@@ -5386,7 +5397,7 @@ DisplayServer::WindowID DisplayServerWindows::_create_window(WindowMode p_mode, 
 				WindowRect.top,
 				WindowRect.right - WindowRect.left,
 				WindowRect.bottom - WindowRect.top,
-				nullptr,
+				p_flags & WINDOW_FLAG_HIDE_FROM_TASKBAR_BIT ? windows[MAIN_WINDOW_ID].hWnd : nullptr,
 				nullptr,
 				hInstance,
 				// tunnel the WindowData we need to handle creation message
