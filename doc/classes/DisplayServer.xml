@@ -998,6 +998,14 @@
 				[b]Note:[/b] This method is implemented on Linux (X11/Wayland), macOS and Windows.
 			</description>
 		</method>
+		<method name="minimize_all_windows" qualifiers="const">
+			<return type="void" />
+			<description>
+				Minimizes all windows even if they belong to different applications.
+				[b]Warning:[/b] Be cautious when using this method, as it can be considered intrusive.
+				[b]Note:[/b] This method is implemented only on Windows.
+			</description>
+		</method>
 		<method name="mouse_get_button_state" qualifiers="const">
 			<return type="int" enum="MouseButtonMask" is_bitfield="true" />
 			<description>

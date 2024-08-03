@@ -408,6 +408,8 @@ public:
 
 	virtual WindowID get_window_at_screen_position(const Point2i &p_position) const = 0;
 
+	virtual void minimize_all_windows() const;
+
 	virtual void window_attach_instance_id(ObjectID p_instance, WindowID p_window = MAIN_WINDOW_ID) = 0;
 	virtual ObjectID window_get_attached_instance_id(WindowID p_window = MAIN_WINDOW_ID) const = 0;
 

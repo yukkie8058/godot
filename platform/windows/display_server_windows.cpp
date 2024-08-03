@@ -1450,6 +1450,37 @@ void DisplayServerWindows::delete_sub_window(WindowID p_window) {
 	}
 }
 
+static BOOL CALLBACK _WindowEnumProcMinimizeAll(HWND hWnd, LPARAM lParam) {
+	DWORD style = GetWindowStyle(hWnd);
+	DWORD exStyle = GetWindowExStyle(hWnd);
+	if (!(style & WS_VISIBLE)) {
+		return TRUE;
+	}
+	if (exStyle & WS_EX_TOOLWINDOW) {
+		return TRUE;
+	}
+#if (WINVER >= 0x0602)
+	if (exStyle & WS_EX_NOREDIRECTIONBITMAP) {
+		return TRUE;
+	}
+#endif
+	if (exStyle & WS_EX_NOACTIVATE) {
+		return TRUE;
+	}
+
+	HWND hOwner = GetWindow(hWnd, GW_OWNER);
+	if (hOwner && !(exStyle & WS_EX_APPWINDOW) || IsIconic(hOwner)) {
+		return TRUE;
+	}
+
+	ShowWindow(hWnd, SW_MINIMIZE);
+	return TRUE;
+}
+
+void DisplayServerWindows::minimize_all_windows() const {
+	EnumWindows(_WindowEnumProcMinimizeAll, 0);
+}
+
 void DisplayServerWindows::gl_window_make_current(DisplayServer::WindowID p_window_id) {
 #if defined(GLES3_ENABLED)
 	if (gl_manager_angle) {
